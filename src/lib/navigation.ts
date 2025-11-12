@@ -1,4 +1,4 @@
-import { Home, Users, MessageSquare, List, Lightbulb, Send, Settings, LucideIcon } from "lucide-react";
+import { Home, Users, MessageSquare, List, Lightbulb, Send, Settings, LucideIcon, FileText } from "lucide-react";
 
 export interface NavItem {
   icon: LucideIcon;
@@ -13,5 +13,6 @@ export const navItems: NavItem[] = [
   { icon: List, label: "Funcionalidades", route: "/funcionalidades" },
   { icon: Lightbulb, label: "Insights", route: "/insights" },
   { icon: Send, label: "Feedbacks", route: "/feedbacks" },
+  { icon: FileText, label: "Documento Técnico", route: "/documento-tecnico" },
   { icon: Settings, label: "Configurações", route: "/config" },
 ];

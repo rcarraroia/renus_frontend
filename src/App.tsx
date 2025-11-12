@@ -14,6 +14,7 @@ import FuncionalidadesPage from "./pages/Funcionalidades";
 import InsightsPage from "./pages/Insights";
 import FeedbacksPage from "./pages/Feedbacks";
 import ConfigPage from "./pages/Config";
+import DocumentoTecnicoPage from "./pages/DocumentoTecnico";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const App = () => (
               <Route path="/funcionalidades" element={<FuncionalidadesPage />} />
               <Route path="/insights" element={<InsightsPage />} />
               <Route path="/feedbacks" element={<FeedbacksPage />} />
+              <Route path="/documento-tecnico" element={<DocumentoTecnicoPage />} />
               <Route path="/config" element={<ConfigPage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />

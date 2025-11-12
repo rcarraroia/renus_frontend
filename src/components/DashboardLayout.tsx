@@ -1,6 +1,6 @@
 import React from "react";
 import Sidebar from "./Sidebar";
-import { motion } from "framer-motion";
+import { motion, Transition } from "framer-motion";
 import { useLocation } from "react-router-dom";
 
 interface DashboardLayoutProps {
@@ -26,7 +26,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     },
   };
 
-  const pageTransition = {
+  const pageTransition: Transition = {
     type: "tween",
     ease: "anticipate",
     duration: 0.5,
