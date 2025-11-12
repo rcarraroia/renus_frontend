@@ -22,14 +22,15 @@ export default {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        // Custom RENUS colors
+        background: "hsl(var(--background))", // Should be black
+        foreground: "hsl(var(--foreground))", // Should be light text
         primary: {
-          DEFAULT: "hsl(var(--primary))",
+          DEFAULT: "hsl(var(--primary))", // Cyan accent
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
+          DEFAULT: "hsl(var(--secondary))", // Dark gray panels
           foreground: "hsl(var(--secondary-foreground))",
         },
         destructive: {
