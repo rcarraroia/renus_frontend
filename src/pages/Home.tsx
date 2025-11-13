@@ -77,19 +77,7 @@ const ChromeSpherePage: React.FC = () => {
       </motion.div>
 
       {/* 4. Dashboard Link (Top Right - Discreet) */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 3 }}
-        className="fixed top-8 right-8 z-30"
-      >
-        <Link to="/dashboard">
-            <Button variant="ghost" className="text-muted-foreground hover:text-primary transition-colors">
-                <Menu className="h-5 w-5 mr-2" />
-                Dashboard
-            </Button>
-        </Link>
-      </motion.div>
+      {/* REMOVIDO: O link para o Dashboard foi removido para manter a imersão. */}
 
       {/* 5. RENUS Logo (Footer) */}
       <motion.div
