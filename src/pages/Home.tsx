@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Mic, Loader, Volume2 } from 'lucide-react';
+import { Mic, Loader, Volume2, LayoutDashboard } from 'lucide-react';
 import ChromeSphere from '@/components/ChromeSphere';
 import useSpeech from '@/hooks/use-speech';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,7 @@ const ChromeSpherePage: React.FC = () => {
       case 'listening':
         return <Mic className="h-6 w-6 animate-pulse text-red-500" />;
       case 'speaking':
-      case 'idle': // Usar Volume2 para idle também, já que ele fala ao iniciar
+      case 'idle':
         return <Volume2 className="h-6 w-6 text-primary" />;
       case 'thinking':
         return <Loader className="h-6 w-6 animate-spin text-purple-400" />;
@@ -39,7 +39,7 @@ const ChromeSpherePage: React.FC = () => {
       </motion.div>
 
       {/* 2. Subtitles/Transcript Area */}
-      <div className="absolute bottom-24 w-full max-w-3xl text-center px-4">
+      <div className="absolute bottom-40 w-full max-w-3xl text-center px-4">
         <motion.p
           key={subtitles}
           initial={{ opacity: 0, y: 10 }}
@@ -54,12 +54,12 @@ const ChromeSpherePage: React.FC = () => {
         </motion.p>
       </div>
 
-      {/* 3. Microphone Button (Bottom Right) */}
+      {/* 3. Microphone Button (Centered Bottom) */}
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 2 }}
-        className="fixed bottom-8 right-8 z-30"
+        className="fixed bottom-8 z-30"
       >
         <Button
           variant="ghost"
@@ -76,7 +76,7 @@ const ChromeSpherePage: React.FC = () => {
         </Button>
       </motion.div>
 
-      {/* 4. Dashboard Link (Top Right - Discreet) */}
+      {/* 4. Dashboard Link (Discreet, Top Right) - Mantendo a opção de acesso ao dashboard */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -84,8 +84,8 @@ const ChromeSpherePage: React.FC = () => {
         className="fixed top-8 right-8 z-30"
       >
         <Link to="/dashboard">
-            <Button variant="outline" className="bg-secondary/50 hover:bg-secondary/80 backdrop-blur-sm border border-primary/20 text-primary">
-                Acessar Dashboard
+            <Button variant="outline" size="icon" className="bg-secondary/50 hover:bg-secondary/80 backdrop-blur-sm border border-primary/20 text-primary">
+                <LayoutDashboard className="h-5 w-5" />
             </Button>
         </Link>
       </motion.div>
