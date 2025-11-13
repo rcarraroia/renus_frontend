@@ -86,10 +86,19 @@ export default {
             height: "0",
           },
         },
+        "neon-pulse": {
+          "0%, 100%": {
+            filter: "drop-shadow(0 0 8px hsl(var(--primary)/0.6))",
+          },
+          "50%": {
+            filter: "drop-shadow(0 0 18px hsl(var(--primary)/1))",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "neon-pulse": "neon-pulse 3s ease-in-out infinite",
       },
     },
   },

@@ -16,43 +16,40 @@ const ORBIT_RADIUS = SPHERE_SIZE / 2 + 50; // Orbit slightly outside the sphere
 
 const ChromeSphere: React.FC<ChromeSphereProps> = ({ state, size = SPHERE_SIZE }) => {
   
-  // Framer Motion variants for the sphere's core
+  // Framer Motion variants for the sphere's core (now controlling the image)
   const sphereVariants = {
     idle: {
       scale: 1,
-      boxShadow: `0 0 40px rgba(0, 216, 255, 0.5), inset 0 0 20px rgba(0, 216, 255, 0.25)`,
-      transition: { duration: 2, repeat: Infinity, repeatType: 'reverse' as const, ease: 'easeInOut' as const },
+      transition: { duration: 0.5 },
     },
     listening: {
       scale: 0.95, // Contrai levemente
-      boxShadow: `0 0 50px rgba(30, 144, 255, 0.8), inset 0 0 30px rgba(30, 144, 255, 0.5)`,
       transition: { duration: 0.3, ease: 'easeOut' as const },
     },
     speaking: {
       scale: 1.05, // Brilho central intenso
-      boxShadow: `0 0 60px #00D8FF, inset 0 0 40px #00D8FF`,
       transition: { duration: 0.1, repeat: Infinity, repeatType: 'reverse' as const, ease: 'easeInOut' as const },
     },
     thinking: {
       scale: 1,
-      boxShadow: `0 0 40px rgba(147, 51, 234, 0.8), inset 0 0 20px rgba(147, 51, 234, 0.5)`, // Luz roxa
-      transition: { duration: 3, repeat: Infinity, repeatType: 'reverse' as const, ease: 'easeInOut' as const },
+      transition: { duration: 0.5 },
     },
   };
 
-  // CSS for the chrome reflection effect (using the provided gradient reference)
-  const chromeStyle: React.CSSProperties = {
-    width: size,
-    height: size,
-    borderRadius: '50%',
-    background: 'linear-gradient(180deg, #d9d9d9 0%, #ffffff 40%, #bcbcbc 60%, #4f4f4f 80%, #101010 100%)',
-    position: 'relative',
-    overflow: 'hidden',
-    willChange: 'transform, box-shadow',
+  // 3D Rotation variant (applied only to the image)
+  const rotationVariants = {
+    animate: {
+      rotateY: 360,
+      transition: {
+        duration: 60, // Very slow rotation
+        repeat: Infinity,
+        ease: "linear" as const,
+      },
+    },
   };
 
   return (
-    <div className="relative flex items-center justify-center" style={{ width: size + 200, height: size + 200 }}>
+    <div className="relative flex flex-col items-center justify-center" style={{ width: size + 200, height: size + 200 }}>
       
       {/* Orbital Stars Container */}
       <div className="absolute" style={{ width: ORBIT_RADIUS * 2, height: ORBIT_RADIUS * 2 }}>
@@ -66,31 +63,37 @@ const ChromeSphere: React.FC<ChromeSphereProps> = ({ state, size = SPHERE_SIZE }
       {/* Concentric Waves (Only visible when speaking) */}
       {state === 'speaking' && <ConcentricWave size={size} />}
 
-      {/* Chrome Sphere Core */}
+      {/* Image Sphere Core (Receives 3D rotation and Neon Pulse) */}
       <motion.div
-        style={chromeStyle}
+        className="relative"
+        style={{ width: size, height: size, perspective: 1000 }} // Add perspective for 3D effect
         variants={sphereVariants}
         animate={state}
-        className={cn(
-            "flex items-center justify-center",
-            // Add a subtle border for definition
-            "border border-white/10" 
-        )}
       >
-        {/* Inner Glow/Effect Layer */}
-        <motion.div
-            className="absolute inset-0 rounded-full"
-            style={{
-                // Simulate the inner light source
-                background: 'radial-gradient(circle at center, rgba(0, 216, 255, 0.5) 0%, rgba(0, 0, 0, 0) 70%)',
-                mixBlendMode: 'overlay',
-            }}
-            animate={{ opacity: state === 'speaking' ? 1 : state === 'listening' ? 0.8 : 0.5 }}
-            transition={{ duration: 0.5 }}
+        <motion.img
+          src="/renus-chrome-sphere.png"
+          alt="RENUS AI Core Sphere"
+          className={cn(
+            "w-full h-full object-contain",
+            "animate-neon-pulse" // Apply dynamic neon pulse
+          )}
+          variants={rotationVariants}
+          initial={{ rotateY: 0 }}
+          animate="animate"
+          style={{ willChange: 'transform, filter' }}
         />
-        
-        {/* Placeholder for the image texture (if needed, but relying on CSS gradient for chrome look) */}
-        <div className="text-2xl font-bold text-black/80 z-10">RENUS</div>
+      </motion.div>
+
+      {/* Static RENUS Name (Always facing forward) */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 1 }}
+        className="absolute bottom-[50px] text-center z-10"
+      >
+        <h1 className="text-4xl font-extrabold tracking-widest text-primary drop-shadow-[0_0_10px_hsl(var(--primary))]">
+          RENUS
+        </h1>
       </motion.div>
     </div>
   );

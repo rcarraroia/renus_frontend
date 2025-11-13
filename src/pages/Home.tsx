@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Mic, Loader, Volume2, Menu } from 'lucide-react';
+import { Mic, Loader, Volume2 } from 'lucide-react';
 import ChromeSphere from '@/components/ChromeSphere';
 import useSpeech from '@/hooks/use-speech';
 import { Button } from '@/components/ui/button';
@@ -16,10 +16,10 @@ const ChromeSpherePage: React.FC = () => {
       case 'listening':
         return <Mic className="h-6 w-6 animate-pulse text-red-500" />;
       case 'speaking':
-        return <Volume2 className="h-6 w-6 animate-bounce text-primary" />;
+      case 'idle': // Usar Volume2 para idle também, já que ele fala ao iniciar
+        return <Volume2 className="h-6 w-6 text-primary" />;
       case 'thinking':
         return <Loader className="h-6 w-6 animate-spin text-purple-400" />;
-      case 'idle':
       default:
         return <Mic className="h-6 w-6 text-foreground" />;
     }
@@ -77,16 +77,17 @@ const ChromeSpherePage: React.FC = () => {
       </motion.div>
 
       {/* 4. Dashboard Link (Top Right - Discreet) */}
-      {/* REMOVIDO: O link para o Dashboard foi removido para manter a imersão. */}
-
-      {/* 5. RENUS Logo (Footer) */}
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 0.3 }}
+        animate={{ opacity: 1 }}
         transition={{ delay: 3 }}
-        className="fixed bottom-4 text-sm font-bold tracking-widest text-primary/50"
+        className="fixed top-8 right-8 z-30"
       >
-        RENUS
+        <Link to="/dashboard">
+            <Button variant="outline" className="bg-secondary/50 hover:bg-secondary/80 backdrop-blur-sm border border-primary/20 text-primary">
+                Acessar Dashboard
+            </Button>
+        </Link>
       </motion.div>
     </div>
   );
