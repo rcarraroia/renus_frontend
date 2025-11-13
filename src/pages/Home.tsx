@@ -1,10 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Mic, Loader, Volume2, LayoutDashboard } from 'lucide-react';
+import { Mic, Loader, Volume2 } from 'lucide-react';
 import ChromeSphere from '@/components/ChromeSphere';
 import useSpeech from '@/hooks/use-speech';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 const ChromeSpherePage: React.FC = () => {
@@ -74,20 +73,6 @@ const ChromeSpherePage: React.FC = () => {
         >
           {getMicIcon()}
         </Button>
-      </motion.div>
-
-      {/* 4. Dashboard Link (Discreet, Top Right) - Mantendo a opção de acesso ao dashboard */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 3 }}
-        className="fixed top-8 right-8 z-30"
-      >
-        <Link to="/dashboard">
-            <Button variant="outline" size="icon" className="bg-secondary/50 hover:bg-secondary/80 backdrop-blur-sm border border-primary/20 text-primary">
-                <LayoutDashboard className="h-5 w-5" />
-            </Button>
-        </Link>
       </motion.div>
     </div>
   );
