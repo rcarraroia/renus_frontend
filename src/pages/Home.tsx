@@ -13,11 +13,16 @@ const ChromeSpherePage: React.FC = () => {
   const getMicIcon = () => {
     switch (agentState) {
       case 'listening':
+        // Microfone pulsando em vermelho quando está ouvindo
         return <Mic className="h-6 w-6 animate-pulse text-red-500" />;
       case 'speaking':
+        // Microfone com cor primária quando está falando (pode ser interpretado como 'pronto para ouvir')
+        return <Mic className="h-6 w-6 text-primary" />;
       case 'idle':
-        return <Volume2 className="h-6 w-6 text-primary" />;
+        // Microfone com cor primária quando está ocioso
+        return <Mic className="h-6 w-6 text-primary" />;
       case 'thinking':
+        // Loader girando quando está processando
         return <Loader className="h-6 w-6 animate-spin text-purple-400" />;
       default:
         return <Mic className="h-6 w-6 text-foreground" />;
