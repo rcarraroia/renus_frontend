@@ -7,6 +7,7 @@ import { AnimatePresence } from "framer-motion";
 import DashboardLayout from "./components/DashboardLayout";
 
 // Pages
+import HomePage from "./pages/Home"; // Nova Home Page
 import VisaoGeralPage from "./pages/VisaoGeral";
 import LeadsPage from "./pages/Leads";
 import RespostasPage from "./pages/Respostas";
@@ -25,22 +26,27 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <DashboardLayout>
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route path="/" element={<VisaoGeralPage />} />
-              <Route path="/leads" element={<LeadsPage />} />
-              <Route path="/respostas" element={<RespostasPage />} />
-              <Route path="/funcionalidades" element={<FuncionalidadesPage />} />
-              <Route path="/insights" element={<InsightsPage />} />
-              <Route path="/feedbacks" element={<FeedbacksPage />} />
-              <Route path="/documento-tecnico" element={<DocumentoTecnicoPage />} />
-              <Route path="/config" element={<ConfigPage />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AnimatePresence>
-        </DashboardLayout>
+        <AnimatePresence mode="wait">
+          <Routes>
+            {/* Rota da Nova Home Page Imersiva */}
+            <Route path="/" element={<HomePage />} />
+
+            {/* Rotas do Dashboard Aninhadas */}
+            <Route path="/dashboard" element={<DashboardLayout />}>
+              <Route index element={<VisaoGeralPage />} /> {/* /dashboard */}
+              <Route path="leads" element={<LeadsPage />} />
+              <Route path="respostas" element={<RespostasPage />} />
+              <Route path="funcionalidades" element={<FuncionalidadesPage />} />
+              <Route path="insights" element={<InsightsPage />} />
+              <Route path="feedbacks" element={<FeedbacksPage />} />
+              <Route path="documento-tecnico" element={<DocumentoTecnicoPage />} />
+              <Route path="config" element={<ConfigPage />} />
+            </Route>
+
+            {/* Rota de Catch-All (404) */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AnimatePresence>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

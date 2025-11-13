@@ -1,13 +1,13 @@
 import React from "react";
 import Sidebar from "./Sidebar";
 import { motion, Transition } from "framer-motion";
-import { useLocation } from "react-router-dom";
+import { useLocation, Outlet } from "react-router-dom";
 
 interface DashboardLayoutProps {
-  children: React.ReactNode;
+  children?: React.ReactNode; // Children is now optional as we use Outlet
 }
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+const DashboardLayout: React.FC<DashboardLayoutProps> = () => {
   const location = useLocation();
 
   // Framer Motion variants for page transitions
@@ -45,7 +45,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             variants={pageVariants}
             transition={pageTransition}
           >
-            {children}
+            <Outlet /> {/* Renderiza a página aninhada aqui */}
           </motion.div>
         </main>
       </div>
