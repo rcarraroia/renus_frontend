@@ -7,12 +7,12 @@ export interface NavItem {
 }
 
 export const navItems: NavItem[] = [
-  { icon: Home, label: "Visão Geral", route: "/" },
-  { icon: Users, label: "Leads", route: "/leads" },
-  { icon: MessageSquare, label: "Respostas", route: "/respostas" },
-  { icon: List, label: "Funcionalidades", route: "/funcionalidades" },
-  { icon: Lightbulb, label: "Insights", route: "/insights" },
-  { icon: Send, label: "Feedbacks", route: "/feedbacks" },
-  { icon: FileText, label: "Documento Técnico", route: "/documento-tecnico" },
-  { icon: Settings, label: "Configurações", route: "/config" },
+  { icon: Home, label: "Visão Geral", route: "/dashboard" },
+  { icon: Users, label: "Leads", route: "/dashboard/leads" },
+  { icon: MessageSquare, label: "Respostas", route: "/dashboard/respostas" },
+  { icon: List, label: "Funcionalidades", route: "/dashboard/funcionalidades" },
+  { icon: Lightbulb, label: "Insights", route: "/dashboard/insights" },
+  { icon: Send, label: "Feedbacks", route: "/dashboard/feedbacks" },
+  { icon: FileText, label: "Documento Técnico", route: "/dashboard/documento-tecnico" },
+  { icon: Settings, label: "Configurações", route: "/dashboard/config" },
 ];
