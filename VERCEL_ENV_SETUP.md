@@ -12,10 +12,15 @@ Este documento descreve as variáveis de ambiente que devem ser configuradas no 
 
 ### API Configuration
 ```
-VITE_API_BASE_URL=http://72.60.151.78:8080
+VITE_API_BASE_URL=
 VITE_API_TIMEOUT=30000
-VITE_WS_URL=ws://72.60.151.78:8080/api/v1/agent/voice-stream
+VITE_WS_URL=wss://renus-frontend.vercel.app/api/v1/agent/voice-stream
 ```
+
+**Importante**: 
+- `VITE_API_BASE_URL` deve estar vazio para usar URLs relativas
+- O Vercel faz proxy das requisições `/api/*` para o backend via `vercel.json`
+- Isso evita problemas de Mixed Content (HTTPS → HTTP)
 
 ### Audio Configuration
 ```
