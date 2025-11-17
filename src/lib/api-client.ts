@@ -3,7 +3,11 @@
  * Handles HTTP requests with authentication and error handling
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+// Use empty string for production (relative URLs via Vercel proxy)
+// Use localhost for development
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL !== undefined 
+  ? import.meta.env.VITE_API_BASE_URL 
+  : (import.meta.env.DEV ? 'http://localhost:8000' : '');
 const API_TIMEOUT = parseInt(import.meta.env.VITE_API_TIMEOUT || '30000');
 
 interface RequestConfig extends RequestInit {
