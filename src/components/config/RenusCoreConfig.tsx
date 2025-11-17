@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,35 +7,59 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Save, Plus, Upload, FileText, Settings, Zap, GitBranch, BookOpen, Send } from "lucide-react";
+import { Save, Plus, Upload, FileText, Settings, Zap, GitBranch, BookOpen, Send, Loader2 } from "lucide-react";
 import { showSuccess } from "@/utils/toast";
 import { cn } from "@/lib/utils";
+import { useAgentConfig, useUpdateAgentConfig } from "@/hooks/useFuncionalidades";
+import { toast } from "sonner";
 
 // --- Sub-Components for Tabs ---
 
-const InstructionsTab: React.FC = () => (
+interface InstructionsTabProps {
+  config: any;
+  onChange: (field: string, value: any) => void;
+}
+
+const InstructionsTab: React.FC<InstructionsTabProps> = ({ config, onChange }) => (
   <div className="space-y-6">
     <div className="space-y-2">
       <Label htmlFor="prompt-principal">Prompt Principal</Label>
       <Textarea 
         id="prompt-principal" 
         placeholder="Defina o prompt base e as regras de comportamento do Agente Principal..." 
-        className="bg-background/50 min-h-[200px] border-primary/20" 
+        className="bg-background/50 min-h-[200px] border-primary/20"
+        value={config?.prompt_principal || ''}
+        onChange={(e) => onChange('prompt_principal', e.target.value)}
       />
     </div>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div className="space-y-2">
         <Label htmlFor="identidade">Identidade do Agente</Label>
-        <Input id="identidade" placeholder="Ex: RENUS AI, Assistente de Requisitos" className="bg-background/50 border-primary/20" />
+        <Input 
+          id="identidade" 
+          placeholder="Ex: RENUS AI, Assistente de Requisitos" 
+          className="bg-background/50 border-primary/20"
+          value={config?.identidade || ''}
+          onChange={(e) => onChange('identidade', e.target.value)}
+        />
       </div>
       <div className="space-y-2">
         <Label htmlFor="objetivo">Objetivo Operacional</Label>
-        <Input id="objetivo" placeholder="Ex: Coletar e analisar dados de mercado" className="bg-background/50 border-primary/20" />
+        <Input 
+          id="objetivo" 
+          placeholder="Ex: Coletar e analisar dados de mercado" 
+          className="bg-background/50 border-primary/20"
+          value={config?.objetivo || ''}
+          onChange={(e) => onChange('objetivo', e.target.value)}
+        />
       </div>
     </div>
     <div className="space-y-2">
       <Label htmlFor="comunicacao">Modo de Comunicação</Label>
-      <Select defaultValue="texto">
+      <Select 
+        value={config?.modo_comunicacao || 'texto'}
+        onValueChange={(value) => onChange('modo_comunicacao', value)}
+      >
         <SelectTrigger id="comunicacao" className="bg-background/50 border-primary/20">
           <SelectValue placeholder="Selecione o Modo" />
         </SelectTrigger>
@@ -49,12 +73,11 @@ const InstructionsTab: React.FC = () => (
   </div>
 );
 
-const ToolsTab: React.FC = () => {
-  const mockTools = [
-    { name: "Google Search API", status: "Conectado", icon: Settings },
-    { name: "Internal DB Query", status: "Desconectado", icon: Zap },
-  ];
+interface ToolsTabProps {
+  tools: any[];
+}
 
+const ToolsTab: React.FC<ToolsTabProps> = ({ tools }) => {
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
@@ -64,19 +87,25 @@ const ToolsTab: React.FC = () => {
         </Button>
       </div>
       <div className="space-y-2">
-        {mockTools.map((tool, index) => (
-          <Card key={index} className="bg-background/50 border-primary/20 p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <tool.icon className="h-5 w-5 text-primary" />
-                <span className="font-medium">{tool.name}</span>
+        {tools && tools.length > 0 ? (
+          tools.map((tool, index) => (
+            <Card key={index} className="bg-background/50 border-primary/20 p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Settings className="h-5 w-5 text-primary" />
+                  <span className="font-medium">{tool.name}</span>
+                </div>
+                <span className={cn("text-sm", tool.status === "Conectado" ? "text-green-400" : "text-red-400")}>
+                  {tool.status}
+                </span>
               </div>
-              <span className={cn("text-sm", tool.status === "Conectado" ? "text-green-400" : "text-red-400")}>
-                {tool.status}
-              </span>
-            </div>
-          </Card>
-        ))}
+            </Card>
+          ))
+        ) : (
+          <div className="text-center py-8 text-muted-foreground">
+            Nenhuma ferramenta configurada.
+          </div>
+        )}
       </div>
     </div>
   );
@@ -97,12 +126,11 @@ const IntegrationsTab: React.FC = () => (
   </div>
 );
 
-const KnowledgeTab: React.FC = () => {
-  const mockKnowledge = [
-    { title: "Manual de MMN 2024", date: "2024-09-01", size: "1.2MB", type: "PDF" },
-    { title: "Requisitos Iniciais", date: "2024-10-15", size: "50KB", type: "YAML" },
-  ];
+interface KnowledgeTabProps {
+  knowledge: any[];
+}
 
+const KnowledgeTab: React.FC<KnowledgeTabProps> = ({ knowledge }) => {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
@@ -116,19 +144,25 @@ const KnowledgeTab: React.FC = () => {
       <Card className="bg-background/50 border-primary/20 p-4">
         <h3 className="text-lg font-semibold mb-3">Bases Carregadas</h3>
         <div className="space-y-2">
-          {mockKnowledge.map((item, index) => (
-            <div key={index} className="flex items-center justify-between border-b border-border/50 pb-2 last:border-b-0">
-              <div className="flex items-center space-x-3">
-                <BookOpen className="h-4 w-4 text-accent" />
-                <span className="text-sm font-medium">{item.title}</span>
+          {knowledge && knowledge.length > 0 ? (
+            knowledge.map((item, index) => (
+              <div key={index} className="flex items-center justify-between border-b border-border/50 pb-2 last:border-b-0">
+                <div className="flex items-center space-x-3">
+                  <BookOpen className="h-4 w-4 text-accent" />
+                  <span className="text-sm font-medium">{item.title}</span>
+                </div>
+                <div className="text-xs text-muted-foreground space-x-4">
+                  <span>{item.type}</span>
+                  <span>{item.size}</span>
+                  <span>{item.date}</span>
+                </div>
               </div>
-              <div className="text-xs text-muted-foreground space-x-4">
-                <span>{item.type}</span>
-                <span>{item.size}</span>
-                <span>{item.date}</span>
-              </div>
+            ))
+          ) : (
+            <div className="text-center py-4 text-muted-foreground text-sm">
+              Nenhuma base de conhecimento carregada.
             </div>
-          ))}
+          )}
         </div>
       </Card>
     </div>
@@ -158,14 +192,6 @@ const TriggersTab: React.FC = () => (
 );
 
 
-const tabComponents: Record<string, React.FC> = {
-  instructions: InstructionsTab,
-  tools: ToolsTab,
-  integrations: IntegrationsTab,
-  knowledge: KnowledgeTab,
-  triggers: TriggersTab,
-};
-
 const tabItems = [
   { value: "instructions", label: "Instructions", icon: FileText },
   { value: "tools", label: "Tools", icon: Settings },
@@ -176,10 +202,49 @@ const tabItems = [
 
 const RenusCoreConfig: React.FC = () => {
   const [activeTab, setActiveTab] = useState("instructions");
+  const { data: agentConfig, isLoading, error } = useAgentConfig();
+  const updateConfig = useUpdateAgentConfig();
+  const [localConfig, setLocalConfig] = useState<any>({});
 
-  const handleSave = () => {
-    showSuccess("Configurações do RENUS Core atualizadas com sucesso!");
+  useEffect(() => {
+    if (agentConfig) {
+      setLocalConfig(agentConfig);
+    }
+  }, [agentConfig]);
+
+  const handleChange = (field: string, value: any) => {
+    setLocalConfig((prev: any) => ({ ...prev, [field]: value }));
   };
+
+  const handleSave = async () => {
+    try {
+      await updateConfig.mutateAsync(localConfig);
+      toast.success("Configurações do RENUS Core atualizadas com sucesso!");
+    } catch (err) {
+      toast.error("Falha ao salvar configurações");
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <Card className="bg-secondary/30 border-primary/20">
+        <CardContent className="flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <span className="ml-2 text-muted-foreground">Carregando configurações...</span>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="bg-secondary/30 border-primary/20">
+        <CardContent className="text-center py-8 text-destructive">
+          Erro ao carregar configurações. Tente novamente.
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="bg-secondary/30 border-primary/20">
@@ -202,25 +267,35 @@ const RenusCoreConfig: React.FC = () => {
           </TabsList>
 
           <AnimatePresence mode="wait">
-            {tabItems.map(item => {
-              if (item.value === activeTab) {
-                const TabComponent = tabComponents[item.value];
-                return (
-                  <motion.div
-                    key={item.value}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <TabsContent value={item.value} className="mt-0">
-                      <TabComponent />
-                    </TabsContent>
-                  </motion.div>
-                );
-              }
-              return null;
-            })}
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              <TabsContent value="instructions" className="mt-0">
+                {activeTab === "instructions" && (
+                  <InstructionsTab config={localConfig} onChange={handleChange} />
+                )}
+              </TabsContent>
+              <TabsContent value="tools" className="mt-0">
+                {activeTab === "tools" && (
+                  <ToolsTab tools={localConfig?.tools || []} />
+                )}
+              </TabsContent>
+              <TabsContent value="integrations" className="mt-0">
+                {activeTab === "integrations" && <IntegrationsTab />}
+              </TabsContent>
+              <TabsContent value="knowledge" className="mt-0">
+                {activeTab === "knowledge" && (
+                  <KnowledgeTab knowledge={localConfig?.knowledge_base || []} />
+                )}
+              </TabsContent>
+              <TabsContent value="triggers" className="mt-0">
+                {activeTab === "triggers" && <TriggersTab />}
+              </TabsContent>
+            </motion.div>
           </AnimatePresence>
         </Tabs>
         
@@ -228,9 +303,19 @@ const RenusCoreConfig: React.FC = () => {
           <Button 
             className="bg-primary hover:bg-primary/80 text-primary-foreground"
             onClick={handleSave}
+            disabled={updateConfig.isPending}
           >
-            <Save className="mr-2 h-4 w-4" />
-            Salvar Configurações do Agente
+            {updateConfig.isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Salvando...
+              </>
+            ) : (
+              <>
+                <Save className="mr-2 h-4 w-4" />
+                Salvar Configurações do Agente
+              </>
+            )}
           </Button>
         </div>
       </CardContent>

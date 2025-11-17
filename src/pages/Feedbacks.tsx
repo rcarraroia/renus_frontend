@@ -8,14 +8,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Send } from "lucide-react";
-
-const mockFeedbacks = [
-  { id: 1, nicho: "MMN", mensagem: "O bot está muito lento...", canal: "E-mail", status: "Pendente", data: "2024-09-28" },
-  { id: 2, nicho: "Saúde", mensagem: "Sugestão de novo prompt.", canal: "WhatsApp", status: "Resolvido", data: "2024-09-29" },
-];
+import { Calendar, Send, Loader2 } from "lucide-react";
+import { useFeedbacks } from "@/hooks/useFeedbacks";
 
 const FeedbacksPage: React.FC = () => {
+  const { data: feedbacks, isLoading, error } = useFeedbacks();
   return (
     <div className="space-y-8">
       <h1 className="text-3xl font-bold text-foreground">Gestão de Feedbacks</h1>
@@ -26,30 +23,40 @@ const FeedbacksPage: React.FC = () => {
           <CardTitle>Feedbacks Enviados</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-secondary/50">
-                {["Nicho", "Mensagem", "Canal", "Status", "Data"].map((header) => (
-                  <TableHead key={header} className="text-primary">{header}</TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {mockFeedbacks.map((feedback) => (
-                <TableRow key={feedback.id} className="hover:bg-secondary/50">
-                  <TableCell className="font-medium">{feedback.nicho}</TableCell>
-                  <TableCell className="max-w-[300px] truncate">{feedback.mensagem}</TableCell>
-                  <TableCell>{feedback.canal}</TableCell>
-                  <TableCell>
-                    <Badge variant={feedback.status === 'Pendente' ? 'destructive' : 'default'}>
-                        {feedback.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{feedback.data}</TableCell>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <span className="ml-2 text-muted-foreground">Carregando feedbacks...</span>
+            </div>
+          ) : error ? (
+            <div className="text-center py-8 text-destructive">
+              Erro ao carregar feedbacks. Tente novamente.
+            </div>
+          ) : !feedbacks || feedbacks.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              Nenhum feedback encontrado.
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow className="hover:bg-secondary/50">
+                  {["Nicho", "Comentário", "Tipo", "Data"].map((header) => (
+                    <TableHead key={header} className="text-primary">{header}</TableHead>
+                  ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {feedbacks.map((feedback) => (
+                  <TableRow key={feedback.id} className="hover:bg-secondary/50">
+                    <TableCell className="font-medium">{feedback.nicho}</TableCell>
+                    <TableCell className="max-w-[300px] truncate">{feedback.comentario}</TableCell>
+                    <TableCell>{feedback.tipo}</TableCell>
+                    <TableCell>{feedback.data}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
 

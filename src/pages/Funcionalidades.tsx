@@ -3,22 +3,35 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ResponsiveContainer, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Bar } from "recharts";
 import { Badge } from "@/components/ui/badge";
-
-const functionalityData = [
-  { name: 'Automação', Frequência: 150, Prioridade: 80 },
-  { name: 'Relatórios', Frequência: 120, Prioridade: 65 },
-  { name: 'Integração CRM', Frequência: 90, Prioridade: 95 },
-  { name: 'Gamificação', Frequência: 70, Prioridade: 40 },
-];
-
-const rankingData = [
-    { funcionalidade: "Integração CRM", frequencia: 95, prioridade: "Alta" },
-    { funcionalidade: "Automação de Follow-up", frequencia: 80, prioridade: "Alta" },
-    { funcionalidade: "Relatórios Personalizados", frequencia: 65, prioridade: "Média" },
-    { funcionalidade: "Gamificação", frequencia: 40, prioridade: "Baixa" },
-];
+import { Loader2 } from "lucide-react";
+import { useFuncionalidades } from "@/hooks/useFuncionalidades";
 
 const FuncionalidadesPage: React.FC = () => {
+  const { data: funcionalidades, isLoading, error } = useFuncionalidades();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <span className="ml-2 text-muted-foreground">Carregando funcionalidades...</span>
+      </div>
+    );
+  }
+
+  if (error || !funcionalidades) {
+    return (
+      <div className="text-center py-8 text-destructive">
+        Erro ao carregar funcionalidades. Tente novamente.
+      </div>
+    );
+  }
+
+  // Transform data for chart
+  const functionalityData = funcionalidades.map(f => ({
+    name: f.nome,
+    Frequência: f.votos,
+    Prioridade: f.prioridade === 'Alta' ? 95 : f.prioridade === 'Média' ? 65 : 40
+  }));
   return (
     <div className="space-y-8">
       <h1 className="text-3xl font-bold text-foreground">Análise de Funcionalidades</h1>
@@ -65,21 +78,22 @@ const FuncionalidadesPage: React.FC = () => {
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-secondary/50">
-                {["Funcionalidade", "Frequência", "Prioridade"].map((header) => (
+                {["Funcionalidade", "Votos", "Prioridade", "Nicho"].map((header) => (
                   <TableHead key={header} className="text-primary">{header}</TableHead>
                 ))}
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rankingData.map((item, index) => (
-                <TableRow key={index} className="hover:bg-secondary/50">
-                  <TableCell className="font-medium">{item.funcionalidade}</TableCell>
-                  <TableCell>{item.frequencia}</TableCell>
+              {funcionalidades.map((item) => (
+                <TableRow key={item.id} className="hover:bg-secondary/50">
+                  <TableCell className="font-medium">{item.nome}</TableCell>
+                  <TableCell>{item.votos}</TableCell>
                   <TableCell>
                     <Badge variant={item.prioridade === 'Alta' ? 'destructive' : item.prioridade === 'Média' ? 'default' : 'secondary'}>
                         {item.prioridade}
                     </Badge>
                   </TableCell>
+                  <TableCell>{item.nicho}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
